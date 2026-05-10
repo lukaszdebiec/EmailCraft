@@ -22,11 +22,14 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onAddBlock, onOpenTranslationManager }) => {
+  const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
   const { translations } = useTranslation();
   const keys = Object.keys(translations.english);
 
   const copyToClipboard = (key: string) => {
     navigator.clipboard.writeText(`{{${key}}}`);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
   return (
@@ -111,12 +114,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ onAddBlock, onOpenTranslationM
         </div>
         <div className="token-list">
           {keys.map(key => (
-            <div key={key} className="token-item" onClick={() => copyToClipboard(key)}>
+            <div 
+              key={key} 
+              className="token-item" 
+              onClick={() => copyToClipboard(key)}
+              title={`Click to copy {{${key}}}`}
+            >
               <div className="token-info">
                 <Hash size={12} />
                 <span>{key}</span>
               </div>
-              <Copy size={12} className="copy-icon" />
+              {copiedKey === key ? (
+                <span style={{ fontSize: '0.65rem', color: '#4ade80', fontWeight: 'bold' }}>Copied!</span>
+              ) : (
+                <Copy size={12} className="copy-icon" />
+              )}
             </div>
           ))}
         </div>

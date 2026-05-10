@@ -14,11 +14,7 @@ interface PropertiesProps {
 
 export const Properties: React.FC<PropertiesProps> = ({ 
   selectedBlock, 
-  selectedColumn, 
   onChange, 
-  onDelete, 
-  activeTab, 
-  onTabChange 
 }) => {
   if (!selectedBlock) {
     return (

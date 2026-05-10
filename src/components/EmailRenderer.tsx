@@ -7,7 +7,7 @@ interface EmailRendererProps {
   isPreview?: boolean;
 }
 
-export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks, isPreview = false }) => {
+export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks }) => {
   const { t } = useTranslation();
   return (
     <div className="email-renderer" style={{ backgroundColor: 'white', minHeight: '100%', width: '100%' }}>

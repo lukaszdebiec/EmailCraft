@@ -391,7 +391,7 @@ function renderBlockContent(
     case 'text':
       return (
         <RichTextEditor
-          content={block.content}
+          content={block.content || ''}
           onChange={(html) => onUpdateBlock(block.id, { content: html })}
           isSelected={selectedBlockId === block.id}
           style={{ 

@@ -25,7 +25,7 @@ export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks }) => {
             width: block.style.width || '100%',
             backgroundColor: block.type !== 'button' ? block.style.backgroundColor : 'transparent',
             borderRadius: block.style.borderRadius,
-            textAlign: 'left',
+            textAlign: block.style.textAlign as any || 'left',
           }}>
             {renderBlock(block, t)}
           </div>

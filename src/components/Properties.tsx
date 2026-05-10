@@ -38,29 +38,17 @@ export const Properties: React.FC<PropertiesProps> = ({
       <div className="panel-header">{selectedBlock.type} Properties</div>
       <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px', overflowY: 'auto', maxHeight: 'calc(100vh - 60px)' }}>
         
-        {/* Content Section */}
-        {selectedBlock.type !== 'spacer' && selectedBlock.type !== 'divider' && (
+        {/* Image Source Section */}
+        {selectedBlock.type === 'image' && (
           <div className="property-group">
-            <label style={labelStyle}>Content</label>
-            {selectedBlock.type === 'text' || selectedBlock.type === 'button' ? (
-              <>
-                <textarea
-                  style={inputStyle}
-                  rows={3}
-                  value={selectedBlock.content || ''}
-                  onChange={(e) => onChange(selectedBlock.id, { content: e.target.value })}
-                />
-                <TranslationPicker onSelect={(key) => onChange(selectedBlock.id, { content: (selectedBlock.content || '') + key })} />
-              </>
-            ) : selectedBlock.type === 'image' ? (
-              <input
-                style={inputStyle}
-                type="text"
-                value={selectedBlock.content || ''}
-                placeholder="Image URL"
-                onChange={(e) => onChange(selectedBlock.id, { content: e.target.value })}
-              />
-            ) : null}
+            <label style={labelStyle}>Image URL</label>
+            <input
+              style={inputStyle}
+              type="text"
+              value={selectedBlock.content || ''}
+              placeholder="https://example.com/image.png"
+              onChange={(e) => onChange(selectedBlock.id, { content: e.target.value })}
+            />
           </div>
         )}
 

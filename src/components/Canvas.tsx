@@ -292,7 +292,7 @@ const CanvasBlock: React.FC<{
     borderRadius: block.style.borderRadius,
     width: block.style.width || '100%',
     display: (block.style.width && block.style.width !== '100%') || block.type === 'button' ? 'inline-block' : 'block',
-    textAlign: 'left',
+    textAlign: block.style.textAlign || 'left',
   };
 
   return (

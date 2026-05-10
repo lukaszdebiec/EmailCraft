@@ -52,6 +52,21 @@ export const Properties: React.FC<PropertiesProps> = ({
           </div>
         )}
 
+        {/* Button Settings Section */}
+        {selectedBlock.type === 'button' && (
+          <div className="property-group">
+            <label style={labelStyle}>Button Text</label>
+            <input
+              style={inputStyle}
+              type="text"
+              value={selectedBlock.content || ''}
+              placeholder="Click here"
+              onChange={(e) => onChange(selectedBlock.id, { content: e.target.value })}
+            />
+            <TranslationPicker onSelect={(key) => onChange(selectedBlock.id, { content: (selectedBlock.content || '') + key })} />
+          </div>
+        )}
+
         {/* Link Section */}
         {(selectedBlock.type === 'button' || selectedBlock.type === 'image') && (
           <div className="property-group">

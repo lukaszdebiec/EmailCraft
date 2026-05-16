@@ -1,8 +1,7 @@
 import React from 'react';
-import { Eye, Edit3, Download, Send, RotateCcw, Save, FileText, ChevronDown } from 'lucide-react';
+import { Eye, Download, Send, RotateCcw, Save, FileText, ChevronDown } from 'lucide-react';
 
 interface HeaderProps {
-  viewMode: 'edit' | 'preview';
   setViewMode: (mode: 'edit' | 'preview') => void;
   onExport: () => void;
   onReset: () => void;
@@ -13,7 +12,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
-  viewMode, 
   setViewMode, 
   onExport, 
   onReset,

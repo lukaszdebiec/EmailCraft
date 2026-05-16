@@ -337,7 +337,6 @@ function EmailBuilder() {
   return (
     <div className="app-container" style={{ flexDirection: 'column' }}>
       <Header 
-        viewMode={viewMode} 
         setViewMode={setViewMode} 
         onExport={handleExport}
         onReset={() => setShowResetModal(true)}

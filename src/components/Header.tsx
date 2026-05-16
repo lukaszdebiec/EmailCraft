@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Edit3, Download, Send, RotateCcw, Save, FileText } from 'lucide-react';
+import { Eye, Edit3, Download, Send, RotateCcw, Save, FileText, ChevronDown } from 'lucide-react';
 
 interface HeaderProps {
   viewMode: 'edit' | 'preview';
@@ -7,7 +7,7 @@ interface HeaderProps {
   onExport: () => void;
   onReset: () => void;
   savedTemplates: string[];
-  onSaveTemplate: (name: string) => void;
+  onOpenSaveModal: () => void;
   onLoadTemplate: (name: string) => void;
   currentTemplateName: string | null;
 }
@@ -18,16 +18,22 @@ export const Header: React.FC<HeaderProps> = ({
   onExport, 
   onReset,
   savedTemplates,
-  onSaveTemplate,
+  onOpenSaveModal,
   onLoadTemplate,
   currentTemplateName
 }) => {
-  const handleSave = () => {
-    const name = window.prompt('Enter template name:', currentTemplateName || '');
-    if (name) {
-      onSaveTemplate(name);
-    }
-  };
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className="app-header">
@@ -59,32 +65,43 @@ export const Header: React.FC<HeaderProps> = ({
         <div style={{ height: '24px', width: '1px', background: 'rgba(255,255,255,0.1)' }} />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <FileText size={16} style={{ position: 'absolute', left: '10px', color: 'var(--text-secondary)', pointerEvents: 'none' }} />
-            <select 
-              value={currentTemplateName || ''}
-              onChange={(e) => e.target.value && onLoadTemplate(e.target.value)}
-              style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                color: 'white',
-                padding: '6px 12px 6px 32px',
-                fontSize: '0.8125rem',
-                outline: 'none',
-                minWidth: '160px',
-                cursor: 'pointer'
-              }}
+          <div className="custom-dropdown" ref={dropdownRef}>
+            <button 
+              className="dropdown-trigger" 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <option value="">Select Template...</option>
-              {savedTemplates.map(name => (
-                <option key={name} value={name}>{name}</option>
-              ))}
-            </select>
+              <FileText size={16} style={{ position: 'absolute', left: '10px', color: 'var(--text-secondary)' }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>
+                {currentTemplateName || 'Select Template...'}
+              </span>
+              <ChevronDown size={14} style={{ opacity: 0.5 }} />
+            </button>
+            
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                {savedTemplates.length === 0 ? (
+                  <div className="dropdown-empty">No saved templates</div>
+                ) : (
+                  savedTemplates.map(name => (
+                    <button 
+                      key={name}
+                      className={`dropdown-item ${currentTemplateName === name ? 'active' : ''}`}
+                      onClick={() => {
+                        onLoadTemplate(name);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      {name}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
+          
           <button 
             className="export-button" 
-            onClick={handleSave}
+            onClick={onOpenSaveModal}
             title="Save Template"
             style={{ padding: '8px 12px' }}
           >

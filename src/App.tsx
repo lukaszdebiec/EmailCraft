@@ -13,6 +13,7 @@ import { generateEmailHtml } from './utils/HtmlGenerator.ts';
 import { TranslationProvider } from './contexts/TranslationContext.tsx';
 import { DynamicKeyProvider } from './contexts/DynamicKeyContext.tsx';
 import { DynamicKeyManager } from './components/DynamicKeyManager.tsx';
+import { SaveTemplateModal } from './components/SaveTemplateModal.tsx';
 import { useTranslation } from './contexts/TranslationContext.tsx';
 import { useDynamicKeys } from './contexts/DynamicKeyContext.tsx';
 import './index.css';
@@ -26,6 +27,7 @@ function EmailBuilder() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [showTranslationManager, setShowTranslationManager] = useState(false);
   const [showDynamicKeyManager, setShowDynamicKeyManager] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
   const [savedTemplates, setSavedTemplates] = useState<Record<string, any>>({});
   const [currentTemplateName, setCurrentTemplateName] = useState<string | null>(null);
 
@@ -340,7 +342,7 @@ function EmailBuilder() {
         onExport={handleExport}
         onReset={() => setShowResetModal(true)}
         savedTemplates={Object.keys(savedTemplates)}
-        onSaveTemplate={saveTemplate}
+        onOpenSaveModal={() => setShowSaveModal(true)}
         onLoadTemplate={loadTemplate}
         currentTemplateName={currentTemplateName}
       />
@@ -408,6 +410,13 @@ function EmailBuilder() {
           </div>
         </div>
       )}
+
+      <SaveTemplateModal
+        isOpen={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        onSave={saveTemplate}
+        initialName={currentTemplateName || ''}
+      />
     </div>
   );
 };

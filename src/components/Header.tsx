@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   return (
-    <header className="app-header">
+    <header className="app-header" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center' }}>
       <div className="header-logo">
         <div className="logo-icon">
           <Send size={18} color="white" />
@@ -44,37 +44,43 @@ export const Header: React.FC<HeaderProps> = ({
         <span className="logo-text">Email<span style={{ color: 'var(--accent-color)' }}>Craft</span></span>
       </div>
       
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <div className="view-controls">
+      <div className="header-toolbar" style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '12px',
+        background: 'rgba(255, 255, 255, 0.03)',
+        padding: '6px',
+        borderRadius: '12px',
+        border: '1px solid var(--border-color)',
+        justifySelf: 'center'
+      }}>
+        {/* View Mode Group */}
+        <div className="view-controls" style={{ background: 'transparent', padding: 0 }}>
           <button 
-            className={`view-button ${viewMode === 'edit' ? 'active' : ''}`}
-            onClick={() => setViewMode('edit')}
-          >
-            <Edit3 size={16} />
-            <span>Edit</span>
-          </button>
-          <button 
-            className={`view-button ${viewMode === 'preview' ? 'active' : ''}`}
+            className="view-button"
             onClick={() => setViewMode('preview')}
+            style={{ padding: '6px 12px' }}
           >
-            <Eye size={16} />
+            <Eye size={14} />
             <span>Preview</span>
           </button>
         </div>
 
-        <div style={{ height: '24px', width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+        <div style={{ height: '20px', width: '1px', background: 'rgba(255,255,255,0.1)' }} />
 
+        {/* Template Group */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div className="custom-dropdown" ref={dropdownRef}>
             <button 
               className="dropdown-trigger" 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              style={{ padding: '6px 12px 6px 32px', height: '32px' }}
             >
-              <FileText size={16} style={{ position: 'absolute', left: '10px', color: 'var(--text-secondary)' }} />
-              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>
+              <FileText size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-secondary)' }} />
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100px' }}>
                 {currentTemplateName || 'Select Template...'}
               </span>
-              <ChevronDown size={14} style={{ opacity: 0.5 }} />
+              <ChevronDown size={12} style={{ opacity: 0.5 }} />
             </button>
             
             {isDropdownOpen && (
@@ -102,24 +108,36 @@ export const Header: React.FC<HeaderProps> = ({
           <button 
             className="export-button" 
             onClick={onOpenSaveModal}
-            title="Save Template"
-            style={{ padding: '8px 12px' }}
+            style={{ padding: '6px 12px', height: '32px', gap: '6px' }}
           >
-            <Save size={16} />
+            <Save size={14} />
+            <span style={{ fontSize: '0.8125rem' }}>Save</span>
+          </button>
+        </div>
+
+        <div style={{ height: '20px', width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+
+        {/* Global Actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button className="reset-button" onClick={onReset} style={{ padding: '6px 12px', height: '32px', border: 'none' }}>
+            <RotateCcw size={14} />
+            <span style={{ fontSize: '0.8125rem' }}>Start Over</span>
+          </button>
+          <button className="export-button" onClick={onExport} style={{ 
+            padding: '6px 12px', 
+            height: '32px', 
+            gap: '6px',
+            background: 'var(--accent-color)',
+            border: 'none'
+          }}>
+            <Download size={14} />
+            <span style={{ fontSize: '0.8125rem' }}>Export HTML</span>
           </button>
         </div>
       </div>
 
-      <div className="header-actions" style={{ display: 'flex', gap: '8px' }}>
-        <button className="reset-button" onClick={onReset}>
-          <RotateCcw size={16} />
-          <span>Start Over</span>
-        </button>
-        <button className="export-button" onClick={onExport}>
-          <Download size={16} />
-          <span>Export HTML</span>
-        </button>
-      </div>
+      {/* Spacer for grid symmetry */}
+      <div />
     </header>
   );
 };

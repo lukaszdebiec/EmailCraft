@@ -7,8 +7,20 @@ interface EmailRendererProps {
   isPreview?: boolean;
 }
 
-export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks }) => {
+const PREVIEW_DEFAULTS = {
+  'first-name': 'John',
+  'last-name': 'Doe',
+  'activity-name': 'laptop distribution',
+  'activity-description': 'corporate laptop update',
+  'location-name': 'Amsterdam',
+};
+
+export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks, isPreview }) => {
   const { t } = useTranslation();
+  
+  const processText = (text: string) => {
+    return t(text, isPreview ? PREVIEW_DEFAULTS : {});
+  };
   return (
     <div className="email-renderer" style={{ backgroundColor: 'white', minHeight: '100%', width: '100%' }}>
       {blocks.map((block) => (
@@ -27,7 +39,7 @@ export const EmailRenderer: React.FC<EmailRendererProps> = ({ blocks }) => {
             borderRadius: block.style.borderRadius,
             textAlign: block.style.textAlign as any || 'left',
           }}>
-            {renderBlock(block, t)}
+            {renderBlock(block, processText)}
           </div>
         </div>
       ))}

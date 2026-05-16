@@ -11,19 +11,23 @@ import {
   Columns, 
   Video, 
   Copy,
-  Hash
+  Hash,
+  Database
 } from 'lucide-react';
 import { type BlockType } from '../types.ts';
 import { useTranslation } from '../contexts/TranslationContext.tsx';
+import { useDynamicKeys } from '../contexts/DynamicKeyContext.tsx';
 
 interface SidebarProps {
   onAddBlock: (type: BlockType, options?: any) => void;
   onOpenTranslationManager: () => void;
+  onOpenDynamicKeyManager: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onAddBlock, onOpenTranslationManager }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onAddBlock, onOpenTranslationManager, onOpenDynamicKeyManager }) => {
   const [copiedKey, setCopiedKey] = React.useState<string | null>(null);
   const { translations } = useTranslation();
+  const { dynamicKeys } = useDynamicKeys();
   const keys = Object.keys(translations.english);
 
   const copyToClipboard = (key: string) => {
@@ -122,6 +126,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ onAddBlock, onOpenTranslationM
             >
               <div className="token-info">
                 <Hash size={12} />
+                <span>{key}</span>
+              </div>
+              {copiedKey === key ? (
+                <span style={{ fontSize: '0.65rem', color: '#4ade80', fontWeight: 'bold' }}>Copied!</span>
+              ) : (
+                <Copy size={12} className="copy-icon" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="sidebar-section">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h3 style={{ margin: 0 }}>Dynamic Keys</h3>
+          <button 
+            onClick={onOpenDynamicKeyManager}
+            style={{ 
+              fontSize: '0.7rem', 
+              background: 'rgba(16, 185, 129, 0.2)', 
+              color: '#6ee7b7', 
+              border: '1px solid rgba(16, 185, 129, 0.3)', 
+              padding: '2px 8px', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Manage
+          </button>
+        </div>
+        <div className="token-list">
+          {dynamicKeys.map(key => (
+            <div 
+              key={key} 
+              className="token-item dynamic" 
+              onClick={() => copyToClipboard(key)}
+              title={`Click to copy {{${key}}}`}
+            >
+              <div className="token-info">
+                <Database size={12} style={{ color: '#10b981' }} />
                 <span>{key}</span>
               </div>
               {copiedKey === key ? (

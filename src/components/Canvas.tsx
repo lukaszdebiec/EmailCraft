@@ -87,6 +87,7 @@ const RichTextEditor: React.FC<{
 
   return (
     <div style={{ ...style, position: 'relative' }}>
+      <EditorContent editor={editor} />
       {isSelected && (
         <div className="rich-text-toolbar">
           <button
@@ -185,7 +186,6 @@ const RichTextEditor: React.FC<{
           </button>
         </div>
       )}
-      <EditorContent editor={editor} />
     </div>
   );
 };
@@ -280,9 +280,10 @@ const CanvasBlock: React.FC<{
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 100 : 'auto',
+    zIndex: isDragging ? 100 : isSelected ? 90 : 'auto',
     textAlign: block.style.textAlign || 'left',
     width: '100%',
+    position: 'relative', // Ensure z-index works
   };
 
   const contentStyle: React.CSSProperties = {

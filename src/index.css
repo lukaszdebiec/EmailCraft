@@ -280,7 +280,7 @@ body {
 
 .rich-text-toolbar {
   position: absolute;
-  top: -40px;
+  bottom: -45px;
   left: 0;
   display: flex;
   background: white;
@@ -289,7 +289,7 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
   gap: 2px;
-  z-index: 50;
+  z-index: 1000;
 }
 
 .rich-text-toolbar button {

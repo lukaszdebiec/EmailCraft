@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
@@ -11,6 +11,10 @@ import { TranslationManager } from './components/TranslationManager.tsx';
 import { type EmailBlock, type BlockType, type EmailColumn } from './types.ts';
 import { generateEmailHtml } from './utils/HtmlGenerator.ts';
 import { TranslationProvider } from './contexts/TranslationContext.tsx';
+import { DynamicKeyProvider } from './contexts/DynamicKeyContext.tsx';
+import { DynamicKeyManager } from './components/DynamicKeyManager.tsx';
+import { useTranslation } from './contexts/TranslationContext.tsx';
+import { useDynamicKeys } from './contexts/DynamicKeyContext.tsx';
 import './index.css';
 
 function EmailBuilder() {
@@ -21,6 +25,51 @@ function EmailBuilder() {
   const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
   const [showResetModal, setShowResetModal] = useState(false);
   const [showTranslationManager, setShowTranslationManager] = useState(false);
+  const [showDynamicKeyManager, setShowDynamicKeyManager] = useState(false);
+  const [savedTemplates, setSavedTemplates] = useState<Record<string, any>>({});
+  const [currentTemplateName, setCurrentTemplateName] = useState<string | null>(null);
+
+  const { translations, setTranslations } = useTranslation();
+  const { dynamicKeys, setDynamicKeys } = useDynamicKeys();
+
+  // Load templates on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('email-craft-templates');
+    if (stored) {
+      try {
+        setSavedTemplates(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse saved templates', e);
+      }
+    }
+  }, []);
+
+  const saveTemplate = (name: string) => {
+    const newTemplates = {
+      ...savedTemplates,
+      [name]: {
+        blocks,
+        translations,
+        dynamicKeys,
+        updatedAt: new Date().toISOString()
+      }
+    };
+    setSavedTemplates(newTemplates);
+    localStorage.setItem('email-craft-templates', JSON.stringify(newTemplates));
+    setCurrentTemplateName(name);
+  };
+
+  const loadTemplate = (name: string) => {
+    const template = savedTemplates[name];
+    if (template) {
+      setBlocks(template.blocks || []);
+      if (template.translations) setTranslations(template.translations);
+      if (template.dynamicKeys) setDynamicKeys(template.dynamicKeys);
+      setCurrentTemplateName(name);
+      setSelectedBlockId(null);
+      setSelectedColumnId(null);
+    }
+  };
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -290,6 +339,10 @@ function EmailBuilder() {
         setViewMode={setViewMode} 
         onExport={handleExport}
         onReset={() => setShowResetModal(true)}
+        savedTemplates={Object.keys(savedTemplates)}
+        onSaveTemplate={saveTemplate}
+        onLoadTemplate={loadTemplate}
+        currentTemplateName={currentTemplateName}
       />
       
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -301,6 +354,7 @@ function EmailBuilder() {
           <Sidebar 
             onAddBlock={addBlock} 
             onOpenTranslationManager={() => setShowTranslationManager(true)}
+            onOpenDynamicKeyManager={() => setShowDynamicKeyManager(true)}
           />
           <Canvas
             blocks={blocks}
@@ -324,6 +378,10 @@ function EmailBuilder() {
 
       {showTranslationManager && (
         <TranslationManager onClose={() => setShowTranslationManager(false)} />
+      )}
+
+      {showDynamicKeyManager && (
+        <DynamicKeyManager onClose={() => setShowDynamicKeyManager(false)} />
       )}
 
       {viewMode === 'preview' && (
@@ -455,7 +513,9 @@ function getDefaultStyle(type: BlockType): any {
 function App() {
   return (
     <TranslationProvider>
-      <EmailBuilder />
+      <DynamicKeyProvider>
+        <EmailBuilder />
+      </DynamicKeyProvider>
     </TranslationProvider>
   );
 }

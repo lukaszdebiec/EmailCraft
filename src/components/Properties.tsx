@@ -472,6 +472,9 @@ export const Properties: React.FC<PropertiesProps> = ({
               <option value="24px">Large</option>
               <option value="32px">Heading</option>
             </select>
+            <div style={{ marginTop: '16px' }}>
+              <TranslationPicker onSelect={(key) => onChange(selectedBlock.id, { content: (selectedBlock.content || '') + key })} />
+            </div>
           </div>
         )}
       </div>

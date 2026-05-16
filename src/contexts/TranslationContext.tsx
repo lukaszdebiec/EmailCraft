@@ -9,6 +9,7 @@ interface TranslationContextType {
   updateTranslation: (lang: LanguageId, key: string, value: string) => void;
   addTranslationKey: (key: string) => void;
   deleteTranslationKey: (key: string) => void;
+  setTranslations: (translations: TranslationMap) => void;
 }
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
@@ -65,7 +66,8 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
       t, 
       updateTranslation, 
       addTranslationKey, 
-      deleteTranslationKey 
+      deleteTranslationKey,
+      setTranslations
     }}>
       {children}
     </TranslationContext.Provider>
